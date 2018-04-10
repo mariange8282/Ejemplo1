@@ -12,14 +12,12 @@ Vm=4;%Velocidad promedio del viento [m/s] a altura de 80 Metros.
 kd=0.1; %Coeficiente de resistencia inducida
 
 
-tf =30;%tiempo maximo para que los UAV's alcancen la formación deseada.
+
 %performance index
 Iij=10;
 ri=1;
 
-Ns=100; %Número de muestras a tomar
-Ts=tf/(Ns-1);%Tiempo de muestreo
-t=[0:(tf/(Ns-1)):tf];%Vector de tiempo
+
 
 %Constantes de restricciones de control
 Tres = 125;%Restricción de empuje del motor [N];
@@ -48,8 +46,6 @@ a31=[100;-100;0];
 a42=[-100;-100;0];
 a53=[100;-100;0];
 
-%Laplacian matriz
-
 
 I = eye(3);
 A=[0 1;0 0];
@@ -58,12 +54,44 @@ C1=[1 0];
 C2=[0 1];
 Ai= kron(A,I); Bi = kron(B,I); Cp=kron(C1,I);Cv=kron(C2,I);
 
+%Conf simulacion
+tf =30;%tiempo maximo para que los UAV's alcancen la formación deseada.
+Ns=100; %Número de muestras a tomar
+Ts=tf/(Ns-1);%Tiempo de muestreo
+t=[0:(tf/(Ns-1)):tf];%Vector de tiempo
+
 %Casos de simulación
 %Caso 1: UAV1 es el lider, tiene una vel constante y los demas UAV controlan
 %su posicion y velocidad con esta referencia
-simulacion;
+%Laplacian matrix
+L=[0 0 0 0 0; -Iij Iij 0 0 0;-Iij 0 Iij 0 0;0 -Iij 0 Iij 0; 0 0 -Iij 0 Iij];
+
+
+%Cond iniciales - para UAV1
+t=0;
+z1_ini=[p1' v1'];
+Sp1_ini=[1 1 1 tf-t tf-t tf-t].*z1_ini;
+Sv1_ini=[0 0 0 1 1 1].*z1_ini;
+
+kv=;??????
+k=diag(kv)
+K=kron(eye(2),kron(k,eye(3)));
+
+I2N=?
+wpp=(tf-t)^3/3; wpv=(tf-t)^2/2; wvp=(tf-t)^2/2; wvv=tf-t;
+W=[wpp wpv; wvp wvv];
+r=[ri ri ri ri ri];
+R=diag(r);
+M=kron(I2N+kron(W,(R^-1*L)),eye(3));
+
+Walpha=kron([wpp;wvp],kron(R^-1,eye(3)));
+alphai=[];
+alpha=diag(alphai);
+
+hpp=K*(Sp1_ini-M*hp+Walpha*alpha)
+
 
 %Caso 2: UAV1 recibe informacion de UAV2 y UAV3. Tiene menos liderazgo 
-simulacion;
+%simulacion;
 
 %Caso 3:
