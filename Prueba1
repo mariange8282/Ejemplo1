@@ -1,4 +1,69 @@
-hola
-como
-estas
-bien y tu?
+%Proyecto final Apren. y Evol. Orientada a control
+
+
+%Parametros de simulación
+mi = 20;%Peso de cada UAV. [kg]
+g = 9.81;%Aceleración de la gravedad [kg/m^2]
+rho = 1.225; %densidad atmosférica [kg/m^3]
+S=1.37;%Área de ala del UAV 
+CDO = 0.02; %Coeficiente de zero-lift drag
+kn = 1;%Factor de efectividad de carga
+Vm=4;%Velocidad promedio del viento [m/s] a altura de 80 Metros.
+kd=0.1; %Coeficiente de resistencia inducida
+
+
+tf =30;%tiempo maximo para que los UAV's alcancen la formación deseada.
+%performance index
+Iij=10;
+ri=1;
+
+Ns=100; %Número de muestras a tomar
+Ts=tf/(Ns-1);%Tiempo de muestreo
+t=[0:(tf/(Ns-1)):tf];%Vector de tiempo
+
+%Constantes de restricciones de control
+Tres = 125;%Restricción de empuje del motor [N];
+Lresu=392;%Restricción superior de la fuerza de elevación [N];
+Lresi=-294.3;%Restricción inferior de fuerza de elevación [N];
+angu=80;%Restricción superior del ángulo de banca[deg];
+angi=-80;%Restricción inferior del ángulo de banca[deg];
+
+%Condiciones iniciales de los UAVS
+%Posición
+p1=[0;0;90];
+p2=[-80;0;80];
+p3=[90;0;70];
+p4=[-120;0;60];
+p5=[150;0;65];
+%velocidad
+v1=[0;50;0];
+v2=[0;60;0];
+v3=[0;40;0];
+v4=[0;65;0];
+v5=[0;45;0];
+%vectores de separación entre UAVs. aij representa el vector que apunta al
+%UAV i desde el UAV j. Tiene entradas en metros.
+a21=[-100;-100;0];
+a31=[100;-100;0];
+a42=[-100;-100;0];
+a53=[100;-100;0];
+
+%Laplacian matriz
+
+
+I = eye(3);
+A=[0 1;0 0];
+B=[0;1];
+C1=[1 0];
+C2=[0 1];
+Ai= kron(A,I); Bi = kron(B,I); Cp=kron(C1,I);Cv=kron(C2,I);
+
+%Casos de simulación
+%Caso 1: UAV1 es el lider, tiene una vel constante y los demas UAV controlan
+%su posicion y velocidad con esta referencia
+simulacion;
+
+%Caso 2: UAV1 recibe informacion de UAV2 y UAV3. Tiene menos liderazgo 
+simulacion;
+
+%Caso 3:
