@@ -1,6 +1,5 @@
 %Proyecto final Apren. y Evol. Orientada a control
 
-
 %Parametros de simulación
 mi = 20;%Peso de cada UAV. [kg]
 g = 9.81;%Aceleración de la gravedad [kg/m^2]
@@ -73,22 +72,23 @@ z1_ini=[p1' v1'];
 Sp1_ini=[1 1 1 tf-t tf-t tf-t].*z1_ini;
 Sv1_ini=[0 0 0 1 1 1].*z1_ini;
 
-kv=;??????
+kv=[1 1 1 1 1];
 k=diag(kv)
 K=kron(eye(2),kron(k,eye(3)));
 
-I2N=?
+I2N=eye(10);
 wpp=(tf-t)^3/3; wpv=(tf-t)^2/2; wvp=(tf-t)^2/2; wvv=tf-t;
 W=[wpp wpv; wvp wvv];
 r=[ri ri ri ri ri];
 R=diag(r);
 M=kron(I2N+kron(W,(R^-1*L)),eye(3));
-
 Walpha=kron([wpp;wvp],kron(R^-1,eye(3)));
-alphai=[];
-alpha=diag(alphai);
+
+alphai=[10 10 10 10 10]; %no estoy segura si esta bien definida
+alpha1=diag(alphai);
 
 hpp=K*(Sp1_ini-M*hp+Walpha*alpha)
+hvp=K*(Sv1_ini-M*hv+Walpha*alpha)
 
 
 %Caso 2: UAV1 recibe informacion de UAV2 y UAV3. Tiene menos liderazgo 
